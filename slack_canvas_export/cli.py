@@ -4,9 +4,13 @@ import click
 import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
 from .slack_client import SlackAPIClient
 from .exporter import CanvasExporter
+
+
+load_dotenv()
 
 
 @click.command()
