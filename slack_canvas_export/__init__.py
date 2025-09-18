@@ -1,4 +1,4 @@
-"""Slack Canvas to Markdown Exporter
+"""Slack Canvas to Markdown
 
 A tool to export Slack canvases to markdown files for backup purposes.
 """
