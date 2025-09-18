@@ -78,3 +78,44 @@ class SlackAPIClient:
         # If document_content is not present or not markdown, return None
         # Could potentially use download URLs here in the future if needed
         return None
+
+    def join_channel(self, channel: str) -> Dict[str, Any]:
+        """Join a channel to access its canvases.
+
+        Args:
+            channel: The channel ID or name to join (e.g., 'C1234567890' or '#general')
+
+        Returns:
+            Response data from the join operation
+
+        Raises:
+            requests.RequestException: If the API request fails
+            ValueError: If the response is invalid
+        """
+        url = f"{self.base_url}/conversations.join"
+        
+        # Handle both channel IDs and channel names
+        channel_param = channel
+        if channel.startswith('#'):
+            channel_param = channel[1:]  # Remove # prefix
+        
+        data = {"channel": channel_param}
+
+        response = requests.post(url, headers=self.headers, json=data)
+        response.raise_for_status()
+
+        response_data = response.json()
+
+        if not response_data.get("ok"):
+            error_msg = response_data.get("error", "Unknown error")
+            if error_msg == "channel_not_found":
+                raise ValueError(f"Channel '{channel}' not found")
+            elif error_msg == "invalid_auth":
+                raise ValueError("Invalid bot token provided")
+            elif error_msg == "already_in_channel":
+                # This is not really an error, just a note
+                pass
+            else:
+                raise ValueError(f"Slack API error: {error_msg}")
+
+        return response_data

@@ -63,6 +63,9 @@ python export_canvas.py export F09G8G3GB6V
 # Basic export
 python export_canvas.py export F09G8G3GB6V --token xoxb-2210535565-9525419665143-qnlqbJQvFi8t7ksm3m6vW8X3
 
+# Join a channel first (helps with 'not_visible' errors)
+python export_canvas.py join-channel #general --token xoxb-your-token
+
 # Export to specific directory with verbose output
 python export_canvas.py export F09G8G3GB6V --token xoxb-your-token --output ./my_backups --verbose
 
@@ -78,6 +81,7 @@ python export_canvas.py test-auth --token xoxb-your-token
 4. Add the following bot token scopes:
    - `canvases:read` - To read canvas content
    - `files:read` - To read file information
+   - `channels:join` - To join public channels (for accessing canvases)
 5. Install the app to your workspace
 6. Copy the "Bot User OAuth Token" (starts with `xoxb-`)
 
@@ -93,8 +97,23 @@ Exported markdown files include:
 ### Common Issues
 
 1. **"Invalid bot token"**: Make sure your bot token is correct and has the required scopes
-2. **"Canvas not found"**: Verify the canvas ID and ensure the bot has access to it
+2. **"Canvas not found" or "not_visible" errors**: 
+   - Verify the canvas ID format (e.g., F09G8G3GB6V)
+   - The bot might not be a member of the channel containing the canvas
+   - Use the join-channel command: `python export_canvas.py join-channel #channel-name --token your-token`
 3. **Permission errors**: Ensure the bot is added to the workspace and has appropriate permissions
+
+### Joining Channels
+
+If you get "not_visible" errors when trying to export canvases, the bot likely needs to join the channel first:
+
+```bash
+# Join a channel by name
+python export_canvas.py join-channel #general --token your-token
+
+# Join a channel by ID
+python export_canvas.py join-channel C1234567890 --token your-token
+```
 
 ### Testing Authentication
 

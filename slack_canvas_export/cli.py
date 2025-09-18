@@ -145,6 +145,81 @@ def test_auth(token: str):
         sys.exit(1)
 
 
+@click.command()
+@click.argument('channel', type=str)
+@click.option(
+    '--token', '-t',
+    type=str,
+    help='Slack bot token (can also be set via SLACK_BOT_TOKEN environment variable)',
+    envvar='SLACK_BOT_TOKEN'
+)
+@click.option(
+    '--verbose', '-v',
+    is_flag=True,
+    help='Enable verbose output'
+)
+def join_channel(channel: str, token: str, verbose: bool):
+    """Join a Slack channel to access its canvases.
+    
+    CHANNEL is the channel ID or name (e.g., C1234567890 or #general)
+    
+    This is useful when getting 'not_visible' errors while trying to export canvases.
+    The bot needs to be a member of the channel to access its canvases.
+    
+    Example:
+        slack-canvas-export join-channel #general --token xoxb-your-bot-token
+    """
+    if verbose:
+        click.echo(f"Attempting to join channel: {channel}")
+    
+    # Validate token
+    if not token:
+        click.echo("Error: Slack bot token is required. Use --token option or set SLACK_BOT_TOKEN environment variable.")
+        sys.exit(1)
+    
+    try:
+        # Initialize client
+        if verbose:
+            click.echo("Initializing Slack API client...")
+        slack_client = SlackAPIClient(token)
+        
+        # Join the channel
+        if verbose:
+            click.echo(f"Joining channel {channel}...")
+        
+        response = slack_client.join_channel(channel)
+        
+        if response.get("ok"):
+            if response.get("error") == "already_in_channel":
+                click.echo(f"✓ Bot is already a member of channel {channel}")
+            else:
+                click.echo(f"✓ Successfully joined channel {channel}")
+            
+            # Show some channel information if available
+            if "channel" in response:
+                channel_info = response["channel"]
+                channel_name = channel_info.get("name", "Unknown")
+                click.echo(f"  Channel name: #{channel_name}")
+                member_count = channel_info.get("num_members", 0)
+                if member_count > 0:
+                    click.echo(f"  Members: {member_count}")
+        else:
+            click.echo(f"✗ Failed to join channel: {response.get('error', 'Unknown error')}")
+            sys.exit(1)
+            
+    except ValueError as e:
+        click.echo(f"Error: {e}")
+        sys.exit(1)
+    except Exception as e:
+        if verbose:
+            click.echo(f"Unexpected error: {e}")
+            import traceback
+            traceback.print_exc()
+        else:
+            click.echo(f"Error: {e}")
+        sys.exit(1)
+
+
 @click.group()
 def main():
     """Slack Canvas to Markdown Exporter
@@ -156,6 +231,7 @@ def main():
 
 main.add_command(export_canvas, name="export")
 main.add_command(test_auth, name="test-auth")
+main.add_command(join_channel, name="join-channel")
 
 
 if __name__ == "__main__":
