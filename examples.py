@@ -9,32 +9,33 @@ from pathlib import Path
 
 # Example usage patterns for the slack-canvas-to-markdown tool
 
+
 def show_basic_usage():
     """Show basic usage examples."""
     print("Slack Canvas to Markdown - Usage Examples")
     print("=" * 45)
     print()
-    
+
     print("1. Basic export with token as argument:")
     print("   python export_canvas.py export F09G8G3GB6V --token xoxb-your-bot-token")
     print()
-    
+
     print("2. Using environment variable for token:")
     print("   export SLACK_BOT_TOKEN='xoxb-your-bot-token'")
     print("   python export_canvas.py export F09G8G3GB6V")
     print()
-    
+
     print("3. Export to specific directory with verbose output:")
     print("   python export_canvas.py export F09G8G3GB6V \\")
     print("     --token xoxb-your-token \\")
     print("     --output ./my_canvas_backups \\")
     print("     --verbose")
     print()
-    
+
     print("4. Test your bot token authentication:")
     print("   python export_canvas.py test-auth --token xoxb-your-token")
     print()
-    
+
     print("5. Get help for any command:")
     print("   python export_canvas.py --help")
     print("   python export_canvas.py export --help")
@@ -46,8 +47,8 @@ def show_batch_example():
     print("Batch Export Example:")
     print("-" * 20)
     print()
-    
-    batch_script = '''#!/bin/bash
+
+    batch_script = """#!/bin/bash
 # Batch export multiple canvases
 export SLACK_BOT_TOKEN="xoxb-your-bot-token"
 
@@ -66,8 +67,8 @@ for canvas_id in "${canvas_ids[@]}"; do
         echo "Successfully exported canvas: $canvas_id"
     fi
     echo "---"
-done'''
-    
+done"""
+
     print(batch_script)
     print()
 
@@ -99,5 +100,5 @@ if __name__ == "__main__":
     show_basic_usage()
     show_batch_example()
     show_troubleshooting()
-    
+
     print("For more information, see the README.md file.")

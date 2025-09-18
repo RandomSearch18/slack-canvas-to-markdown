@@ -11,9 +11,9 @@ setup(
         "click>=8.0.0",
     ],
     entry_points={
-        'console_scripts': [
-            'slack-canvas-export=slack_canvas_export.cli:main',
+        "console_scripts": [
+            "slack-canvas-export=slack_canvas_export.cli:main",
         ],
     },
-    python_requires='>=3.7',
+    python_requires=">=3.7",
 )
